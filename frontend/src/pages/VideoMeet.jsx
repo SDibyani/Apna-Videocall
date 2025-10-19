@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "../styles/VideoComponent.module.css";
 import { IconButton } from "@mui/material";
 
-const server_url = "http://localhost:8000";
+const server_url = process.env.REACT_APP_BACKEND_URL;
 
 var connections = {};
 

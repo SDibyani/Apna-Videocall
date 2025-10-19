@@ -8,7 +8,7 @@ import { HttpStatusCode } from 'axios';
 export const AuthContext= createContext({});
 
 const client= axios.create({
-    baseURL:"http://localhost:8000/api/v1/users"
+    baseURL:process.env.REACT_APP_BACKEND_URL + "/api/v1/users"
 })
 
 export const AuthProvider= ({children})=> {
