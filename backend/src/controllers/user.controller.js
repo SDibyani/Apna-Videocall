@@ -18,16 +18,38 @@ const login = async(req,res)=>{
     try{
         const user = await User.findOne({username});
         if(!user){
-            return res.status(StatusCodes.NOT_FOUND).json({message:"User Not Found"});
+            return res.status(404).json({message:"User Not Found"});
         }
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(401).json({ message: "Invalid username or password" });
+    }
 
-        if(bcrypt.compare(password, user.password)){
-            let token = crypto.randomBytes(20).toString("hex");
+    // ✅ Generate random token (or JWT)
+    const token = crypto.randomBytes(20).toString("hex");
 
-            user.token = token;
-            await user.save();
-            return res.status(StatusCodes.OK).json({token:token});
-        }
+    user.token = token;
+    await user.save();
+
+    return res.status(200).json({
+      message: "Login successful",
+  data: {
+    token,
+    user: {
+      id: user._id,
+      name: user.name,
+      username: user.username,
+    },
+  },
+    });
+
+        // if(bcrypt.compare(password, user.password)){
+        //     let token = crypto.randomBytes(20).toString("hex");
+
+        //     user.token = token;
+        //     await user.save();
+        //     return res.status(StatusCodes.OK).json({token:token});
+        // }
 
     //    let isPasswordCorrect = await bcrypt.compare(password,user.password)
     //     if(isPasswordCorrect){
@@ -54,7 +76,7 @@ const register = async(req,res)=>{
     try{
         const existingUser = await User.findOne({username});
         if(existingUser){
-            return res.status(StatusCodes.FOUND).json({message:"User already exists"});
+            return res.status(409).json({message:"User already exists"});
         }
 
         const hashedPassword = await bcrypt.hash(password,10);
@@ -66,8 +88,16 @@ const register = async(req,res)=>{
         });
 
         await newUser.save();
+        return res.status(201).json({
+      message: "User registered successfully",
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        username: newUser.username,
+      },
+    });
 
-        res.status(StatusCodes.CREATED).json({message:" User Registered"});
+        // res.status(StatusCodes.CREATED).json({message:" User Registered"});
 
     }catch(e){
         res.json({message:`Something went wrong ${e}`})

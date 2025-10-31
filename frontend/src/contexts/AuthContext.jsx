@@ -16,23 +16,55 @@ export const AuthProvider= ({children})=> {
 
     const [userData, setUserData] = useState(authContext);
 
-    const handleRegister = async(name, username, password)=>{
-        try{
-            let request = await client.post("/register", {
-                name:name,
-                username:username,
-                password:password
-            })
+    // const handleRegister = async(name, username, password)=>{
+    //     try{
+    //         let request = await client.post("/register", {
+    //             name:name,
+    //             username:username,
+    //             password:password
+    //         })
 
-            if(request.status === HttpStatusCode.CREATED){
-                return request.data.message;
-            }
-        }catch(err){
-            throw err;
-        }
+    //         if(request.status === HttpStatusCode.CREATED){
+    //             return request.data.message;
+    //         }
+    //     }catch(err){
+    //         throw err;
+    //     }
+    // }
+
+const handleRegister = async (name, username, password) => {
+  try {
+    const response = await client.post("/register", {
+      name,
+      username,
+      password,
+    });
+
+    // Log the entire response for debugging
+    console.log("Register Response:", response);
+
+    if (response.status === 201) {
+      return response.data.message; // ✅ Success
+    } else {
+      return response.data?.message || "Registration failed";
     }
+  } catch (err) {
+    console.error("Register Error:", err.response?.data || err.message);
+    throw err;
+  }
+};
+
+
+
 
     
+
+
+
+
+
+
+
 
 
 
@@ -70,7 +102,8 @@ export const AuthProvider= ({children})=> {
             console.log(username, password)
             console.log(request.data)
 
-            if (request.status === HttpStatusCode.OK) {
+            // if (request.status === HttpStatusCode.OK) {
+             if (request.status >= 200 && request.status < 300) {
                 localStorage.setItem("token", request.data.token);
                 router("/home");
                 return {message:"Login Successful" , data: request.data};

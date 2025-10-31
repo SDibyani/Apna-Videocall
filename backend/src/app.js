@@ -15,10 +15,8 @@ const server= createServer(app);
 const io= connectToSocket(server);
 
 
-app.use(cors({
-  origin: ["https://apna-videocall-2.onrender.com"], // your frontend URL
-  credentials: true,
-}));
+
+
 
 
 app.set("port", (process.env.PORT || 8000));

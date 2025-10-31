@@ -534,7 +534,7 @@ function VideoMeetComponent() {
             </div>
              
              <div className={styles.chattingArea}>
-               {message}
+               {/* {message} */}
                <TextField value={message} onChange={(e) => setMessage(e.target.value)} id="outlined-basic" label="Enter Your chat" variant="outlined" />
                 <Button variant='contained' onClick={sendMessage}>SEND</Button>
               </div>
